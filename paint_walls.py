@@ -9,10 +9,10 @@ rate = {
     "minutes" : 22
 }
 
-def Time(rate, people, walls):
-    walls_people = rate["walls"] / rate["people"]
-    minutes_people = rate["minutes"] / rate["people"]
-    final_rate = minutes_people / walls_people
-    print(final_rate * walls)
+def Time(dct, people, walls):
+	walls_people = dct["walls"] / dct["people"]
+	minutes_people = dct["minutes"] / dct["people"]
+	final_rate = minutes_people / walls_people
+	print(int(final_rate * walls))
 
 Time(rate, 14, 14)
