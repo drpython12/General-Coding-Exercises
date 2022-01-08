@@ -1,7 +1,7 @@
 def only_ints(a, b):
     if (type(a) is int and type(b) is int):
-        return("True")
+        print("True")
     else:
-        return("False")
+        print("False")
 
 only_ints("a", 2)
