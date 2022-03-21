@@ -5,4 +5,4 @@ def add_dots(word):
     return(".".join(word_split))
     
 def remove_dots(word):
-    return(word.replace(".", ""))    
+    return(word.replace(".", ""))
