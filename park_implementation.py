@@ -33,6 +33,11 @@ class Park:
         represents a slot currently being used.
         '''
 
+        ''' 
+        Parking policy implemented:
+        I chose to implement a "first fit" policy as I feel this is the most realistic representation and 
+        simulation of a parking lot in real-time, even though the program is a simplified model.
+        '''
     def park_car(self, car: Car) -> Boolean:
         for i in range(len(self.utilisation)):
             index = i + car.car_length 
