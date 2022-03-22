@@ -50,12 +50,12 @@ class Park:
             if self.cars[i].car_time == 0: # Check if parking time expired
                 pos = self.cars[i].car_position
                 self.utilisation[pos:pos + self.cars[i].car_length] = [0 for x in range(self.cars[i].car_length)] # Replace 1s with 0s indicating free slots
-                to_pop.append(i) # Append index of Car instance to remove
+                to_pop.append(i) # Append index of Car instance to be removed
         for j in range(len(to_pop)):
-            self.cars.pop(j) # Pop Car instances from self.cars array
+            self.cars.pop(j) # Pop Car instances from self.cars array using indexes
             
     def report_utilisation(self) -> float:
-        used = 0 # Number of used slots
+        used = 0 # Number of used parking slots
         for i in range(len(self.utilisation)):
             if self.utilisation[i] == 1: 
                 used += 1 # Incremented by one if a slot is not free
