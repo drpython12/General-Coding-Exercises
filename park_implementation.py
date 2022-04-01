@@ -1,6 +1,6 @@
 # Author: Palash Samir Haresh Gandhi
 # ISDA: Python Developer Internship Test
-# Date Of Writing: 21/03/2022
+# Date Of Writing: 31/03/2022
 # Python File 1 of 2
 
 from dataclasses import dataclass
@@ -41,13 +41,15 @@ class Park:
     def park_car(self, car: Car) -> Boolean:
 
         found = False 
-        car.end_position = car.car_length - 1 # End position in best case (empty parking)
+        car.end_position = car.car_length - 1 # End position in best case scenario (empty parking)
         if self.utilisation == 0 and car.end_position < self.park_length: # If park is empty and car fits 
             self.utilisation += car.car_length # Add length of car to number of used spots
             self.cars.append(car) # Append Car object passed as argument to self.cars for later access
             return True # Return true as car parked successfully
         while(not found):
             for j in range(len(self.cars)): # Look through every car currently in park
+                # While statement ensures that new car's start and end positions do not lie within
+                # another car's start and end positions until we search all park slots
                 while (self.cars[j].start_position <= car.start_position and self.cars[j].end_position >= car.start_position) or (self.cars[j].start_position <= car.end_position and self.cars[j].end_position >= car.end_position):
                     car.start_position += 1 # Increase start position by 1
                     car.end_position += 1 # Increase end position by 1

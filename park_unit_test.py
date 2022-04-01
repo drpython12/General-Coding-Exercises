@@ -1,6 +1,6 @@
 # Author: Palash Samir Haresh Gandhi
 # ISDA: Python Developer Internship Test
-# Date Of Writing: 21/03/2022
+# Date Of Writing: 31/03/2022
 # Python File 2 of 2
 
 import unittest
@@ -43,15 +43,19 @@ class TestParkMethods(unittest.TestCase):
         car1 = Car(2,2)
         park.park_car(car1)
         park.elapse_period()
+        self.assertEqual(car1.car_time, 1)
         car2 = Car(4,3)
-        park.park_car(car2)
         park.elapse_period()
+        park.park_car(car2)
+        self.assertEqual(car1.car_time, 0)
         self.assertEqual(park.cars, [car2])
         self.assertEqual(park.utilisation, 4)
 
         park.elapse_period()
+        self.assertEqual(car2.car_time, 2)
         park.elapse_period()
         park.elapse_period()
+        self.assertEqual(car2.car_time, 0)
         self.assertEqual(park.cars, [])
         self.assertEqual(park.utilisation, 0)
 
