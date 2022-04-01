@@ -11,57 +11,64 @@ class Car:
     
     car_length: int # Length of the car
     car_time: int # Number of periods car will be parked
-    car_position: int = 0 # The starting position of the car in the parking array (default value 0)
+
+    start_position: int = 0 # The starting position of the car in the parking array (default value 0)
+    end_position: int = 0 # The ending position of the car in the parking array (default value 0)
 
     def __repr__(self) -> str:
-        return f'Car -> Length: {self.car_length}, Time: {self.car_time}'
+        return f'Car -> Length: {self.car_length}, Time: {self.car_time}, Start Position: {self.start_position}, End Position {self.end_position}'
 
 class Park:
 
     def __init__(self, park_length: int) -> None:
         self.park_length = park_length
-        self.cars = [] # Array to store objects of type Car
-        self.utilisation = [0 for i in range(park_length)] # Initialises array to park_length number of 0's
+        self.cars = [] # Array to store object instances of type Car
+        self.utilisation = 0 # Represents the number of slots currently being used
 
         '''
         self.cars stores instances of type car, this will help us access and manage
         the attributes of all cars inside the parking lot. 
 
-        self.utilisation is initialised as an array consisting of park_length number
-        of zeros. This array represents the 1-dimensional parking lot and will be
-        used to track available parking spaces. 0 represents a free slot and 1
-        represents a slot currently being used.
+        self.utilisation keeps track of the number of spots currently being used.
         '''
 
         ''' 
         Parking policy implemented:
         I chose to implement a "first fit" policy as I feel this is the most realistic representation and 
-        simulation of a parking lot in real-time, even though the program is a simplified model.
+        simulation of a parking lot in real-time.
         '''
+
     def park_car(self, car: Car) -> Boolean:
-        for i in range(len(self.utilisation)):
-            index = i + car.car_length 
-            if self.utilisation[i:index] == [0 for x in range(car.car_length)]: # Checks for consecutive 0's in parking array to fit the car passed as argument
-                self.utilisation[i:index] = [1 for y in range(car.car_length)] # 0s in available space replaced by 1s to indicated parked car
-                car.car_position = i # Start index of car instance in parking array is stored in car_position
-                self.cars.append(car) # Car instance is appended to self.cars so we can access its attributes in other methods
-                return True # True return if space found and car parked
-        return False # False return if no consecutive 0s to fit car i.e. no space in lot for car of that length
-                
+
+        found = False 
+        car.end_position = car.car_length - 1 # End position in best case (empty parking)
+        if self.utilisation == 0 and car.end_position < self.park_length: # If park is empty and car fits 
+            self.utilisation += car.car_length # Add length of car to number of used spots
+            self.cars.append(car) # Append Car object passed as argument to self.cars for later access
+            return True # Return true as car parked successfully
+        while(not found):
+            for j in range(len(self.cars)): # Look through every car currently in park
+                while (self.cars[j].start_position <= car.start_position and self.cars[j].end_position >= car.start_position) or (self.cars[j].start_position <= car.end_position and self.cars[j].end_position >= car.end_position):
+                    car.start_position += 1 # Increase start position by 1
+                    car.end_position += 1 # Increase end position by 1
+                    if car.end_position > self.park_length-1: # Return False if no space for car in park (prevents infinite loop)
+                        car.start_position = -1 
+                        car.end_position = -1 # Set to -1 to indicate no space found in park for car
+                        return False
+                                
+                found = True # Parking found for car
+        self.utilisation += car.car_length # Account for spots used by new car
+        self.cars.append(car)
+        return found
+                    
     def elapse_period(self) -> None:
-        to_pop = [] # Array to store index of Car instances to remove from self.cars once their periods have expired
-        for i in range(len(self.cars)):
+        i = 0 
+        while i < len(self.cars):
             self.cars[i].car_time -= 1 # Reduce car_time of each Car instance by 1 
             if self.cars[i].car_time == 0: # Check if parking time expired
-                pos = self.cars[i].car_position
-                self.utilisation[pos:pos + self.cars[i].car_length] = [0 for x in range(self.cars[i].car_length)] # Replace 1s with 0s indicating free slots
-                to_pop.append(i) # Append index of Car instance to be removed
-        for j in range(len(to_pop)):
-            self.cars.pop(j) # Pop Car instances from self.cars array using indexes
+                self.utilisation -= self.cars[i].car_length
+                del self.cars[i] # Delete instance of Car from array (car removed from park)
+            i += 1
             
     def report_utilisation(self) -> float:
-        used = 0 # Number of used parking slots
-        for i in range(len(self.utilisation)):
-            if self.utilisation[i] == 1: 
-                used += 1 # Incremented by one if a slot is not free
-        return(float(used/self.park_length))
+        return(float(self.utilisation)/self.park_length)
