@@ -56,7 +56,7 @@ class Park:
                     if car.end_position > self.park_length-1: # Return False if no space for car in park (prevents infinite loop)
                         car.start_position = -1 
                         car.end_position = -1 # Set to -1 to indicate no space found in park for car
-                        return False
+                        return False # Parking not found
                                 
                 found = True # Parking found for car
         self.utilisation += car.car_length # Account for spots used by new car
